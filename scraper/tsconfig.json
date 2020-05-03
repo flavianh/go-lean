@@ -8,5 +8,5 @@
     "preserveConstEnums": true,
     "outDir": "dist"
   },
-  "exclude": ["**/*.spec.ts", "**/*.spec.tsx"]
+  "typeRoots": ["./node_modules/@types", "./src/@types"]
 }

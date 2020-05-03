@@ -10,6 +10,9 @@
       "statements": -1
     }
   },
+  "transform": {
+    "\\.html$": "./jest-raw-loader"
+  },
   "notify": true,
   "transformIgnorePatterns": ["/node_modules/"]
 }
