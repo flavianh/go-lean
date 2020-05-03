@@ -15,6 +15,7 @@ describe("LeanOrgScraper", () => {
       mockAxios.mockResponse({ data: leanOrgHtml });
       const leanOrgArticle = await leanOrgArticlePromise;
       expect(leanOrgArticle.title).toBe("TPS, the Thinking People System");
+      expect(leanOrgArticle.originalURL).toBe(url.toString());
       expect(leanOrgArticle.author.fullName).toBe("Michael Ballé");
     });
 

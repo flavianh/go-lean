@@ -15,6 +15,7 @@ export class ArticleError extends Error {
 class Article {
   readonly title: string;
   readonly author: Author;
+  readonly originalURL: string;
 
   static build = (
     url: URL,
@@ -33,6 +34,7 @@ class Article {
     }
 
     return {
+      originalURL: url.toString(),
       title: title as string,
       author: { fullName: authorFullname as string },
     };
