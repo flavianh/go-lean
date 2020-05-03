@@ -2,6 +2,7 @@
   "preset": "ts-jest",
   "testEnvironment": "node",
   "clearMocks": true,
+  "collectCoverage": true,
   "coverageDirectory": "coverage",
   "coveragePathIgnorePatterns": ["/node_modules/"],
   "coverageThreshold": {
@@ -9,7 +10,6 @@
       "statements": -1
     }
   },
-  "moduleDirectories": ["node_modules", "src"],
   "notify": true,
   "transformIgnorePatterns": ["/node_modules/"]
 }

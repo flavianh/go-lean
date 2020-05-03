@@ -8,5 +8,5 @@
     "preserveConstEnums": true,
     "outDir": "dist"
   },
-  "exclude": ["**/*.test.ts", "**/*.test.tsx"]
+  "exclude": ["**/*.spec.ts", "**/*.spec.tsx"]
 }

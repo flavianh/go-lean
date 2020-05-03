@@ -39,6 +39,7 @@
     },
     "editor.formatOnSave": true,
     "jest.restartJestOnSnapshotUpdate": true,
-    "jest.autoEnable": true
+    "jest.autoEnable": true,
+    "jest.showCoverageOnLoad": true
   }
 }
