@@ -1,20 +1,46 @@
 import { JSDOM } from "jsdom";
 import axios from "axios";
 
-class Article {
-  readonly title: string;
-}
-
-type Reason = "MissingTitle";
+type ArticleErrorReason = "MissingTitle" | "MissingAuthorFullname";
 
 export class ArticleError extends Error {
   readonly url?: URL;
-  readonly reasons?: Reason[];
-  constructor(url?: URL, reasons?: Reason[]) {
+  readonly reasons?: ArticleErrorReason[];
+  constructor(url?: URL, reasons?: ArticleErrorReason[]) {
     super();
     this.reasons = reasons;
     this.url = url;
   }
+}
+class Article {
+  readonly title: string;
+  readonly author: Author;
+
+  static build = (
+    url: URL,
+    title: string | undefined,
+    authorFullname: string | undefined
+  ): Article => {
+    const errorReasons: ArticleErrorReason[] = [];
+    if (null == authorFullname) {
+      errorReasons.push("MissingAuthorFullname");
+    }
+    if (null == title) {
+      errorReasons.push("MissingTitle");
+    }
+    if (errorReasons.length > 0) {
+      throw new ArticleError(url, errorReasons);
+    }
+
+    return {
+      title: title as string,
+      author: { fullName: authorFullname as string },
+    };
+  };
+}
+
+class Author {
+  readonly fullName: string;
 }
 
 interface Scraper {
@@ -26,11 +52,11 @@ export class LeanOrgScraper implements Scraper {
     const document = await this.getDocument(url);
     const postHeader = document.querySelector("div.posthead");
     const title = postHeader?.querySelector("h1")?.textContent?.trim();
+    const authorFullname = postHeader
+      ?.querySelector(".itemlinkspost a")
+      ?.textContent?.trim();
 
-    if (null == title) {
-      throw new ArticleError(url, ["MissingTitle"]);
-    }
-    return { title };
+    return Article.build(url, title, authorFullname);
   };
 
   private async getDocument(url: URL): Promise<Document> {
