@@ -17,8 +17,23 @@ describe("LeanOrgScraper", () => {
       expect(leanOrgArticle.title).toBe("TPS, the Thinking People System");
       expect(leanOrgArticle.originalURL).toBe(url.toString());
       expect(leanOrgArticle.author.fullName).toBe("Michael Ballé");
+      expect(leanOrgArticle.author.originalURL).toBe(
+        "https://www.lean.org/WhoWeAre/LeanPerson.cfm?LeanPersonId=134"
+      );
     });
 
+    it("should throw an ArticleError with a reason 'URLBroken' if axios responds with status code less than not 200", async () => {
+      const leanOrgScraper = new LeanOrgScraper();
+      const leanOrgArticlePromise = leanOrgScraper.scrapArticle(url);
+      mockAxios.mockResponse({ status: 499, data: "" });
+      try {
+        await leanOrgArticlePromise;
+      } catch (error) {
+        expect(error instanceof ArticleError).toBeTruthy();
+        expect(error.url).toEqual(url);
+        expect(error.reasons).toContain("URLBroken");
+      }
+    });
     it("should throw an ArticleError with a reason 'MissingTitle' if title is missing", async () => {
       const leanOrgScraper = new LeanOrgScraper();
       const leanOrgArticlePromise = leanOrgScraper.scrapArticle(url);
@@ -41,6 +56,18 @@ describe("LeanOrgScraper", () => {
         expect(error instanceof ArticleError).toBeTruthy();
         expect(error.url).toEqual(url);
         expect(error.reasons).toContain("MissingAuthorFullname");
+      }
+    });
+    it("should throw an ArticleError with a reason 'MissingAuthorURL' if author info is missing", async () => {
+      const leanOrgScraper = new LeanOrgScraper();
+      const leanOrgArticlePromise = leanOrgScraper.scrapArticle(url);
+      mockAxios.mockResponse({ data: "" });
+      try {
+        await leanOrgArticlePromise;
+      } catch (error) {
+        expect(error instanceof ArticleError).toBeTruthy();
+        expect(error.url).toEqual(url);
+        expect(error.reasons).toContain("MissingAuthorURL");
       }
     });
   });
