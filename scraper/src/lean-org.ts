@@ -16,7 +16,7 @@ export class ArticleError extends Error {
     this.url = url;
   }
 }
-class Article {
+export class Article {
   readonly title: string;
   readonly author: Author;
   readonly originalURL: string;
