@@ -1,0 +1,45 @@
+name: CI Scraper
+
+on:
+  pull_request:
+    paths:
+      - "scraper/**"
+  push:
+    branches:
+      - master
+    paths:
+      - "scraper/**"
+
+jobs:
+  lint-and-test:
+    name: Lint and test
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      WK_DIR: scraper
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Read node version
+        id: nodever
+        run: echo ::set-output name=version::$(cat .nvmrc)
+        working-directory: ./${{ env.WK_DIR }}
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ steps.nodever.outputs.version }}
+      - uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-${{ steps.nodever.outputs.version }}-${{ hashFiles(format('{0}/package-lock.json', env.WK_DIR)) }}
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./${{ env.WK_DIR }}
+      - name: Lint
+        run: npm run-script lint
+        working-directory: ./${{ env.WK_DIR }}
+      - name: Test
+        run: npm test
+        working-directory: ./${{ env.WK_DIR }}

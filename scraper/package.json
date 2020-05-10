@@ -4,7 +4,8 @@
   "description": "Scraper for Lean Agregator",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint 'src/**/*.ts'"
   },
   "author": "Flavian Hautbois",
   "license": "BSD-2-Clause",
