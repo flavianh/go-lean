@@ -52,41 +52,22 @@ describe("LeanOrgScraper", () => {
         expect(error.reasons).toEqual(["URLBroken"]);
       }
     });
-    it("should throw an ArticleError with a reason 'MissingTitle' if title is missing", async () => {
-      const leanOrgScraper = new LeanOrgScraper();
-      const leanOrgArticlePromise = leanOrgScraper.scrapArticle(url);
-      mockAxios.mockResponse({ data: "" });
-      try {
-        await leanOrgArticlePromise;
-      } catch (error) {
-        expect(error instanceof ArticleError).toBeTruthy();
-        expect(error.url).toEqual(url);
-        expect(error.reasons).toContain("MissingTitle");
+
+    ["MissingTitle", "MissingAuthorFullname", "MissingAuthorURL"].forEach(
+      (reason) => {
+        it(`should throw an ArticleError with a reason '${reason}' if title is missing`, async () => {
+          const leanOrgScraper = new LeanOrgScraper();
+          const leanOrgArticlePromise = leanOrgScraper.scrapArticle(url);
+          mockAxios.mockResponse({ data: "" });
+          try {
+            await leanOrgArticlePromise;
+          } catch (error) {
+            expect(error instanceof ArticleError).toBeTruthy();
+            expect(error.url).toEqual(url);
+            expect(error.reasons).toContain(reason);
+          }
+        });
       }
-    });
-    it("should throw an ArticleError with a reason 'MissingAuthorFullname' if author info is missing", async () => {
-      const leanOrgScraper = new LeanOrgScraper();
-      const leanOrgArticlePromise = leanOrgScraper.scrapArticle(url);
-      mockAxios.mockResponse({ data: "" });
-      try {
-        await leanOrgArticlePromise;
-      } catch (error) {
-        expect(error instanceof ArticleError).toBeTruthy();
-        expect(error.url).toEqual(url);
-        expect(error.reasons).toContain("MissingAuthorFullname");
-      }
-    });
-    it("should throw an ArticleError with a reason 'MissingAuthorURL' if author info is missing", async () => {
-      const leanOrgScraper = new LeanOrgScraper();
-      const leanOrgArticlePromise = leanOrgScraper.scrapArticle(url);
-      mockAxios.mockResponse({ data: "" });
-      try {
-        await leanOrgArticlePromise;
-      } catch (error) {
-        expect(error instanceof ArticleError).toBeTruthy();
-        expect(error.url).toEqual(url);
-        expect(error.reasons).toContain("MissingAuthorURL");
-      }
-    });
+    );
   });
 });
