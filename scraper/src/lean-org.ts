@@ -16,13 +16,19 @@ export class ArticleError extends Error {
     this.url = url;
   }
 }
+
+class ArticleMeta {
+  readonly description: string;
+}
 export class Article {
+  readonly meta: ArticleMeta;
   readonly title: string;
   readonly author: Author;
   readonly originalURL: string;
 
   static build = (
     url: URL,
+    meta: ArticleMeta,
     title: string | undefined,
     authorFullname: string | undefined,
     authorOriginalURL: string | undefined
@@ -47,6 +53,7 @@ export class Article {
     ).toString();
     return {
       originalURL: url.toString(),
+      meta,
       title: title as string,
       author: {
         fullName: authorFullname as string,
@@ -68,6 +75,9 @@ interface Scraper {
 export class LeanOrgScraper implements Scraper {
   scrapArticle = async (url: URL): Promise<Article> => {
     const document = await this.getDocument(url);
+
+    const meta = this.scrapArticleMeta(document);
+
     const postHeader = document.querySelector("div.posthead");
     const title = postHeader?.querySelector("h1")?.textContent?.trim();
     const authorLink:
@@ -77,8 +87,20 @@ export class LeanOrgScraper implements Scraper {
     const authorFullname = authorLink?.textContent?.trim();
     const authorOriginalURL = authorLink?.href;
 
-    return Article.build(url, title, authorFullname, authorOriginalURL);
+    return Article.build(url, meta, title, authorFullname, authorOriginalURL);
   };
+
+  scrapArticleMeta(document: Document): ArticleMeta {
+    const metaDescription = document
+      .querySelector("[property='og:description']")
+      ?.getAttribute("content");
+    const metaDescriptionContent =
+      metaDescription == null ? "" : metaDescription;
+
+    return {
+      description: metaDescriptionContent,
+    };
+  }
 
   private async getDocument(url: URL): Promise<Document> {
     const { data, status } = await axios.get(url.toString());

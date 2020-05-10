@@ -22,6 +22,11 @@ describe("LeanOrgScraper", () => {
       test("parse title", () => {
         expect(leanOrgArticle.title).toBe("TPS, the Thinking People System");
       });
+      test("parse meta description", () => {
+        expect(leanOrgArticle.meta.description).toBe(
+          "The twin pillars of just-in-time and jidoka help support a full model about how to achieve customer satisfaction from employee satisfaction, through teamwork and respect, on a basis of mutual trust between management and employees."
+        );
+      });
       test("return URL", () => {
         expect(leanOrgArticle.originalURL).toBe(url.toString());
       });
