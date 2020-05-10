@@ -23,7 +23,7 @@ class ArticleMeta {
 export class Article {
   readonly meta: ArticleMeta;
   readonly title: string;
-  readonly author: Author;
+  readonly authors: Author[];
   readonly originalURL: string;
 
   static build = (
@@ -55,10 +55,12 @@ export class Article {
       originalURL: url.toString(),
       meta,
       title: title as string,
-      author: {
-        fullName: authorFullname as string,
-        originalURL: rebasedAuthorURL,
-      },
+      authors: [
+        {
+          fullName: authorFullname as string,
+          originalURL: rebasedAuthorURL,
+        },
+      ],
     };
   };
 }

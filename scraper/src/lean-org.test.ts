@@ -30,13 +30,14 @@ describe("LeanOrgScraper", () => {
       test("return URL", () => {
         expect(leanOrgArticle.originalURL).toBe(url.toString());
       });
-      test("parse author full name", () => {
-        expect(leanOrgArticle.author.fullName).toBe("Michael Ballé");
-      });
-      test("parse author URL", () => {
-        expect(leanOrgArticle.author.originalURL).toBe(
-          "https://www.lean.org/WhoWeAre/LeanPerson.cfm?LeanPersonId=134"
-        );
+      test("parse author full name and originalUrl", () => {
+        expect(leanOrgArticle.authors).toStrictEqual([
+          {
+            fullName: "Michael Ballé",
+            originalURL:
+              "https://www.lean.org/WhoWeAre/LeanPerson.cfm?LeanPersonId=134",
+          },
+        ]);
       });
     });
 
